@@ -31,4 +31,8 @@ export class LimitsService {
       { currentLimit: currentLimit.perHourLimit },
     );
   }
+
+  async checkLimit(userId: number) {
+    return await this.limitsRepository.findOne({ userId });
+  }
 }
