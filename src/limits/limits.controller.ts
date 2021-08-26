@@ -16,9 +16,14 @@ export class LimitsController {
     return this.limitsService.reduceLimit(payload);
   }
 
+  @MessagePattern({ cmd: 'limits-reset-user-limit' })
+  async resetUserLimit(@Payload() payload: number) {
+    return this.limitsService.resetUserLimit(payload);
+  }
+
   @MessagePattern({ cmd: 'limits-reset' })
-  async resetLimit(@Payload() payload: number) {
-    return this.limitsService.resetLimit(payload);
+  async resetLimits() {
+    return this.limitsService.resetLimits();
   }
 
   @MessagePattern({ cmd: 'limits-check' })

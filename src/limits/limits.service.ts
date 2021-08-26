@@ -24,11 +24,17 @@ export class LimitsService {
     );
   }
 
-  async resetLimit(userId: number) {
+  async resetUserLimit(userId: number) {
     const currentLimit = await this.limitsRepository.findOne({ userId });
     return this.limitsRepository.update(
       { userId },
       { currentLimit: currentLimit.perHourLimit },
+    );
+  }
+
+  async resetLimits() {
+    return await this.limitsRepository.query(
+      'UPDATE public.limits SET "currentLimit" = "perHourLimit"',
     );
   }
 
