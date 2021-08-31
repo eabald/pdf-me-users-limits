@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LimitEntity } from '@pdf-me/shared';
+import { SetAdditionalLimitDto } from '@pdf-me/shared';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -18,27 +19,45 @@ export class LimitsService {
 
   async reduceLimit(userId: number) {
     const currentLimit = await this.limitsRepository.findOne({ userId });
-    return this.limitsRepository.update(
-      { userId },
-      { currentLimit: currentLimit.currentLimit - 1 },
-    );
+    const update =
+      currentLimit.currentLimit === 0
+        ? { extraLimit: currentLimit.extraLimit - 1 }
+        : { currentLimit: currentLimit.currentLimit - 1 };
+    return this.limitsRepository.update({ userId }, update);
   }
 
   async resetUserLimit(userId: number) {
-    const currentLimit = await this.limitsRepository.findOne({ userId });
-    return this.limitsRepository.update(
-      { userId },
-      { currentLimit: currentLimit.perHourLimit },
+    return await this.limitsRepository.query(
+      'UPDATE public.limits SET "currentLimit" = "perHourLimit" WHERE id = ? WHERE "currentLimit" < "perHourLimit"',
+      [userId],
     );
   }
 
   async resetLimits() {
     return await this.limitsRepository.query(
-      'UPDATE public.limits SET "currentLimit" = "perHourLimit"',
+      'UPDATE public.limits SET "currentLimit" = "perHourLimit" WHERE "currentLimit" < "perHourLimit"',
     );
   }
 
   async checkLimit(userId: number) {
-    return await this.limitsRepository.findOne({ userId });
+    const limit = await this.limitsRepository.findOne({ userId });
+    return limit.currentLimit + limit.extraLimit;
+  }
+
+  async setAdditionalLimit({
+    userId,
+    limit,
+    extraValidTo,
+  }: SetAdditionalLimitDto) {
+    return this.limitsRepository.query(
+      'UPDATE public.limits SET "extraLimit" = "extraLimit" + ?, extraValidTo = ? WHERE userId = ?',
+      [userId, extraValidTo, limit],
+    );
+  }
+
+  async resetAdditionalLimits() {
+    return this.limitsRepository.query(
+      'UPDATE public.limits SET "extraLimit" = 0 WHERE "extraValidTo" < now();',
+    );
   }
 }

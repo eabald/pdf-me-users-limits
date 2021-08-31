@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { SetAdditionalLimitDto } from '@pdf-me/shared';
 import { LimitsService } from './limits.service';
 
 @Controller('limits')
@@ -29,5 +30,10 @@ export class LimitsController {
   @MessagePattern({ cmd: 'limits-check' })
   async checkLimit(@Payload() payload: number) {
     return this.limitsService.checkLimit(payload);
+  }
+
+  @MessagePattern({ cmd: 'limits-set-additional' })
+  async setAdditionalLimit(@Payload() payload: SetAdditionalLimitDto) {
+    return this.limitsService.setAdditionalLimit(payload);
   }
 }
