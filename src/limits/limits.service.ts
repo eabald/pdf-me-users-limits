@@ -11,6 +11,10 @@ export class LimitsService {
     private limitsRepository: Repository<LimitEntity>,
   ) {}
 
+  async getUserLimit(userId: number) {
+    return await this.limitsRepository.findOne({ userId });
+  }
+
   async createLimit(userId: number) {
     const newLimit = await this.limitsRepository.create({ userId });
     await this.limitsRepository.save(newLimit);

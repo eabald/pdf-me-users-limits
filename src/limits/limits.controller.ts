@@ -7,6 +7,11 @@ import { LimitsService } from './limits.service';
 export class LimitsController {
   constructor(private readonly limitsService: LimitsService) {}
 
+  @MessagePattern({ cmd: 'limits-get-by-user' })
+  async getUserLimit(@Payload() payload: number) {
+    return this.limitsService.getUserLimit(payload);
+  }
+
   @MessagePattern({ cmd: 'limits-create' })
   async createLimit(@Payload() payload: number) {
     return this.limitsService.createLimit(payload);
