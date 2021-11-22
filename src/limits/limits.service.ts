@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LimitEntity } from '@pdf-me/shared';
-import { SetAdditionalLimitDto, SetSubscriptionLimitDto } from '@pdf-me/shared';
+import {
+  LimitEntity,
+  SetAdditionalLimitDto,
+  SetSubscriptionLimitDto,
+} from '@eabald/pdf-me-shared';
 import { Repository } from 'typeorm';
 
 @Injectable()

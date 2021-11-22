@@ -1,6 +1,9 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { SetAdditionalLimitDto, SetSubscriptionLimitDto } from '@pdf-me/shared';
+import {
+  SetAdditionalLimitDto,
+  SetSubscriptionLimitDto,
+} from '@eabald/pdf-me-shared';
 import { LimitsService } from './limits.service';
 
 @Controller('limits')
